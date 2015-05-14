@@ -1,17 +1,32 @@
 package com.angelllim.cube.cub;
 
+import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements OnTouchListener {
 
+
+    private TextView currentTimeTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        RelativeLayout thisScreen = (RelativeLayout) findViewById(R.id.timerScreen);
+        thisScreen.setOnTouchListener(this);
+
+        currentTimeTextView = (TextView) findViewById(R.id.currentTime);
     }
 
 
@@ -35,5 +50,36 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    long startTime;
+    Handler handle = new Handler();
+    Handler handle2 = new Handler();
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        currentTimeTextView.setText("0.000");
+        currentTimeTextView.setTextColor(Color.RED);
+        switch(event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                handle.postDelayed(null,500);
+                break;
+            case MotionEvent.ACTION_UP:
+                startTime = System.currentTimeMillis();
+                Runnable time = new Runnable() {
+                    @Override
+                    public void run() {
+                        long timeInMillis = System.currentTimeMillis() - startTime;
+                        currentTimeTextView.setText(String.valueOf(timeInMillis));
+                    }
+                };
+                handle2.postDelayed(time, 0);
+                break;
+            default:
+                currentTimeTextView.setTextColor(Color.BLACK);
+                break;
+
+        }
+        return true;
     }
 }
