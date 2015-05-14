@@ -1,2 +1,2 @@
 # cub
-Android cubing timer
+cube timer for Android mobile phone.
