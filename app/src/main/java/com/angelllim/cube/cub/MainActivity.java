@@ -2,6 +2,7 @@ package com.angelllim.cube.cub;
 
 import android.graphics.Color;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,11 +11,15 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class MainActivity extends ActionBarActivity implements OnTouchListener {
+
+public class MainActivity extends ActionBarActivity implements OnClickListener {
 
 
     private TextView currentTimeTextView;
@@ -24,7 +29,7 @@ public class MainActivity extends ActionBarActivity implements OnTouchListener {
         setContentView(R.layout.activity_main);
 
         RelativeLayout thisScreen = (RelativeLayout) findViewById(R.id.timerScreen);
-        thisScreen.setOnTouchListener(this);
+        thisScreen.setOnClickListener(this);
 
         currentTimeTextView = (TextView) findViewById(R.id.currentTime);
     }
@@ -53,33 +58,32 @@ public class MainActivity extends ActionBarActivity implements OnTouchListener {
     }
 
 
-    long startTime;
-    Handler handle = new Handler();
-    Handler handle2 = new Handler();
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        currentTimeTextView.setText("0.000");
-        currentTimeTextView.setTextColor(Color.RED);
-        switch(event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                handle.postDelayed(null,500);
-                break;
-            case MotionEvent.ACTION_UP:
-                startTime = System.currentTimeMillis();
-                Runnable time = new Runnable() {
-                    @Override
-                    public void run() {
-                        long timeInMillis = System.currentTimeMillis() - startTime;
-                        currentTimeTextView.setText(String.valueOf(timeInMillis));
-                    }
-                };
-                handle2.postDelayed(time, 0);
-                break;
-            default:
-                currentTimeTextView.setTextColor(Color.BLACK);
-                break;
-
+    long startTime = 0;
+    boolean timeRunning = false;
+    Runnable timerRunnable = new TimerTask() {
+        @Override
+        public void run() {
+            final long start = startTime;
+            long millis = System.currentTimeMillis() - start;
+            int seconds = (int) (millis / 1000);
+            int minutes = seconds / 60;
+            seconds     = seconds % 60;
+            currentTimeTextView.setText(String.valueOf(millis));
+            timerHandler.postDelayed(this, 10);
         }
-        return true;
+    };
+
+    Handler timerHandler = new Handler();
+    Timer timer = new Timer();
+
+    @Override
+    public void onClick(View v) {
+        if (!timeRunning) {
+            timerHandler.removeCallbacks(timerRunnable);
+        } else {
+            startTime = System.currentTimeMillis();
+            timerHandler.postDelayed(timerRunnable, 0);
+        }
+        timeRunning=!timeRunning;
     }
 }
