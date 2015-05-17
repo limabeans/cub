@@ -20,6 +20,11 @@
         <activity
             android:name=".SettingsActivity">
         </activity>
+
+        <activity
+            android:name=".SolvesActivity">
+        </activity>
+
     </application>
 
 </manifest>

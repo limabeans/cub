@@ -57,9 +57,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         //Handle presses on the action bar items
         switch (item.getItemId()) {
+            case R.id.action_solves:
+                Intent solvesIntent = new Intent(getApplicationContext(), SolvesActivity.class);
+                startActivity(solvesIntent);
+                return true;
             case R.id.action_settings:
-                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                startActivity(intent);
+                Intent settingsIntent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(settingsIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

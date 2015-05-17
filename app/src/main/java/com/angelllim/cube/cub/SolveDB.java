@@ -1,5 +1,11 @@
 package com.angelllim.cube.cub;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.util.Log;
+
 /**
  * Created by lima on 5/17/15.
  */
@@ -29,4 +35,51 @@ public class SolveDB {
 
     public static final String DROP_SOLVE_TABLE =
             "DROP TABLE IF EXISTS " + SOLVE_TABLE;
+
+
+
+    private SQLiteDatabase db;
+    private DBHelper dbHelper;
+
+    public SolveDB(Context context) {
+        dbHelper = new DBHelper(context, DB_NAME, null, DB_VERSION);
+    }
+
+    private void openReadableDB() {
+        db = dbHelper.getReadableDatabase();
+    }
+
+    private void openWritableDB() {
+        db = dbHelper.getWritableDatabase();
+    }
+
+    private void closeDB() {
+        if (db != null) {
+            db.close();
+        }
+    }
+
+    private static class DBHelper extends SQLiteOpenHelper {
+
+        public DBHelper(Context context, String name, CursorFactory factory, int version) {
+
+            super(context, name, factory, version);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL(CREATE_SOLVE_TABLE);
+
+            //insert sample time
+            db.execSQL("INSERT INTO solve VALUES ( 0, 'F D U', 10000 )");
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            Log.d("onUpgrade", "from " + oldVersion + " to " + newVersion);
+            db.execSQL(SolveDB.DROP_SOLVE_TABLE);
+            onCreate(db);
+        }
+    }
+
 }
