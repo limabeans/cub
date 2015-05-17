@@ -1,30 +1,25 @@
 package com.angelllim.cube.cub;
 
-import android.graphics.Color;
-import android.os.Handler;
-import android.os.SystemClock;
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
+import android.view.MenuInflater;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Timer;
 import java.util.TimerTask;
-
 
 public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     private TextView currentTimeTextView;
-    private final SimpleDateFormat minutesGT10Format = new SimpleDateFormat("mm:ss.SSS");
+    private TextView currentScramble;
+    private final SimpleDateFormat minutesGT10Format = new SimpleDateFormat("mm:ss.SS");
     private final SimpleDateFormat minutesLT10Format = new SimpleDateFormat("m:ss.SSS");
     private final SimpleDateFormat secondsLT10Format= new SimpleDateFormat("s.SSS");
     private final SimpleDateFormat secondsGT10Format= new SimpleDateFormat("ss.SSS");
@@ -38,12 +33,26 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         //Get references
         RelativeLayout thisScreen = (RelativeLayout) findViewById(R.id.timerScreen);
         currentTimeTextView = (TextView) findViewById(R.id.currentTime);
+        currentScramble = (TextView) findViewById(R.id.scramble);
 
         //Set listeners
         thisScreen.setOnClickListener(this);
+
+        currentScramble.setText(ScrambleGenerator.genScramble());
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -53,6 +62,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             timerHandler.post(timerRunnable);
         } else {
             timerHandler.removeCallbacks(timerRunnable);
+            currentScramble.setText(ScrambleGenerator.genScramble());
         }
         timeRunning=!timeRunning;
     }

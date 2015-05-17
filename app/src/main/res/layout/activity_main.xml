@@ -12,8 +12,21 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="80sp"
         android:text="Ready!"
+        android:gravity="center"
         android:id="@+id/currentTime"
         android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="20sp"
+        android:text="UDLRFB"
+        android:gravity="center"
+        android:id="@+id/scramble"
+        android:layout_marginTop="74dp"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
