@@ -1,12 +1,14 @@
 package com.angelllim.cube.cub;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
@@ -33,8 +35,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         //Get references
         RelativeLayout thisScreen = (RelativeLayout) findViewById(R.id.timerScreen);
         currentTimeTextView = (TextView) findViewById(R.id.currentTime);
@@ -42,9 +42,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
         //Set listeners
         thisScreen.setOnClickListener(this);
-
         currentScramble.setText(ScrambleGenerator.genScramble());
-
     }
 
     @Override
@@ -53,6 +51,20 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
     @Override
