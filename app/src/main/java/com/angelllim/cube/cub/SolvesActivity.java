@@ -32,7 +32,9 @@ public class SolvesActivity extends Activity {
         ArrayList<HashMap<String,String>> data = new ArrayList<HashMap<String,String>>();
         for(Solve s : solves) {
             HashMap<String,String> solv= new HashMap<String,String>();
-            solv.put("time", String.valueOf(s.getMillisTime()));
+            long millisTime = s.getMillisTime();
+            String formattedTime = Solve.millisTimeFormatted(millisTime);
+            solv.put("time", formattedTime);
             solv.put("scramble", s.getScramble());
 
             data.add(solv);
