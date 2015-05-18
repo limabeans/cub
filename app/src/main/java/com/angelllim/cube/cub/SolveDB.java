@@ -1,10 +1,13 @@
 package com.angelllim.cube.cub;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 /**
  * Created by lima on 5/17/15.
@@ -28,9 +31,9 @@ public class SolveDB {
 
     //CREATE and DROP TABLE statements
     public static final String CREATE_SOLVE_TABLE =
-            "CREATE_TABLE " + SOLVE_TABLE + " (" +
+            "CREATE TABLE " + SOLVE_TABLE + " (" +
                     SOLVE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    SOLVE_SCRAMBLE + " TEXT NOT NULL," +
+                    SOLVE_SCRAMBLE + " TEXT NOT NULL, " +
                     SOLVE_TIME + " LONG NOT NULL);";
 
     public static final String DROP_SOLVE_TABLE =
@@ -58,6 +61,63 @@ public class SolveDB {
             db.close();
         }
     }
+
+
+    public ArrayList<Solve> getSolves() {
+
+        this.openWritableDB();
+        Cursor cursor = db.query(SOLVE_TABLE, null, null, null, null, null, null);
+        ArrayList<Solve> solves = new ArrayList<Solve>();
+
+        while (cursor.moveToNext()) {
+            solves.add(getSolveFromCursor(cursor));
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+        this.closeDB();
+        return solves;
+    }
+
+    public Solve getSolve(int id) {
+        String where = SOLVE_ID + "= ?";
+        String[] whereArgs = { Integer.toString(id) };
+
+        this.openReadableDB();
+
+        Cursor cursor = db.query(SOLVE_TABLE,
+                null, where, whereArgs, null, null, null);
+        cursor.moveToFirst();
+        Solve solve = getSolveFromCursor(cursor);
+        if (cursor != null) {
+            cursor.close();
+        }
+        this.closeDB();
+
+        return solve;
+    }
+
+
+
+    private static Solve getSolveFromCursor(Cursor cursor) {
+        if (cursor == null || cursor.getCount() == 0) {
+            return null;
+        } else {
+            try {
+                Solve solve = new Solve(
+                        cursor.getInt(SOLVE_ID_COL),
+                        cursor.getString(SOLVE_SCRAMBLE_COL),
+                        cursor.getLong(SOLVE_TIME_COL)
+                );
+                return solve;
+            } catch (Exception e) {
+                return null;
+            }
+        }
+    }
+
+
 
     private static class DBHelper extends SQLiteOpenHelper {
 

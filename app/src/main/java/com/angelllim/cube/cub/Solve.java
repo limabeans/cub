@@ -37,4 +37,9 @@ public class Solve {
     public long getMillisTime() {
         return this.millisTime;
     }
+
+    public String toString() {
+        String str = "" + this.millisTime + " - " + this.scramble;
+        return str;
+    }
 }
