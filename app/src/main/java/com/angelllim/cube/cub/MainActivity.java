@@ -22,12 +22,10 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     private TextView currentTimeTextView;
     private TextView currentScramble;
-    private final SimpleDateFormat minutesGT10Format = new SimpleDateFormat("mm:ss.SS");
-    private final SimpleDateFormat minutesLT10Format = new SimpleDateFormat("m:ss.SSS");
-    private final SimpleDateFormat secondsLT10Format= new SimpleDateFormat("s.SSS");
-    private final SimpleDateFormat secondsGT10Format= new SimpleDateFormat("ss.SSS");
+
 
     private long startTime = 0;
+    private long millisTime = 0;
     private boolean timeRunning = false;
     private Handler timerHandler = new Handler();
 
@@ -76,7 +74,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         }
     }
 
-    private long millisTime;
+
 
     @Override
     public void onClick(View v) {
@@ -104,19 +102,13 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
             long minutes = (millisSoFar / (1000 * 60)) % 60;
             //long hours = (millisSoFar / (1000 * 60 * 60)) % 24;
 
-            if (minutes >= 10) {
-                currentTimeTextView.setText(minutesGT10Format.format(millisSoFar));
-            } else if (minutes >= 1) {
-                currentTimeTextView.setText(minutesLT10Format.format(millisSoFar));
-            } else if (seconds >= 10) {
-                currentTimeTextView.setText(secondsGT10Format.format(millisSoFar));
-            } else {
-                currentTimeTextView.setText(secondsLT10Format.format(millisSoFar));
-            }
+            currentTimeTextView.setText(Solve.millisTimeFormatted(millisSoFar));
 
             millisTime = millisSoFar;
             //Recursively call myself again.
             timerHandler.post(this);
         }
     };
+
+
 }
