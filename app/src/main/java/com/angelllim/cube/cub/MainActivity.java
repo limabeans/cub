@@ -2,8 +2,11 @@ package com.angelllim.cube.cub;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -18,6 +21,8 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.TimerTask;
 
+import android.preference.PreferenceManager;
+
 public class MainActivity extends ActionBarActivity implements OnClickListener {
 
     private TextView currentTimeTextView;
@@ -30,6 +35,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     private Handler timerHandler = new Handler();
 
     private SolveDB db;
+
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +53,32 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         //Set listeners
         thisScreen.setOnClickListener(this);
         currentScramble.setText(ScrambleGenerator.genScramble());
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    }
+
+    @Override
+    protected void onPause() {
+
+        Editor editor = prefs.edit();
+        editor.putString("scramble", currentScramble.getText().toString());
+        editor.commit();
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        String backupScramble = ScrambleGenerator.genScramble();
+        String pastScramble = prefs.getString("scramble", "");
+
+        if(pastScramble.equals("")) {
+            pastScramble = backupScramble;
+        }
+
+        currentScramble.setText(pastScramble);
     }
 
     @Override
