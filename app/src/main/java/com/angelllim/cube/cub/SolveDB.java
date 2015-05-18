@@ -65,7 +65,8 @@ public class SolveDB {
 
     public ArrayList<Solve> getSolves() {
 
-        this.openWritableDB();
+        //this.openWritableDB();
+        this.openReadableDB();
         Cursor cursor = db.query(SOLVE_TABLE, null, null, null, null, null, null);
         ArrayList<Solve> solves = new ArrayList<Solve>();
 
