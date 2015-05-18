@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,6 +31,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
     private boolean timeRunning = false;
     private Handler timerHandler = new Handler();
 
+    private SolveDB db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +42,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         RelativeLayout thisScreen = (RelativeLayout) findViewById(R.id.timerScreen);
         currentTimeTextView = (TextView) findViewById(R.id.currentTime);
         currentScramble = (TextView) findViewById(R.id.scramble);
+
+        db = new SolveDB(getApplicationContext());
 
         //Set listeners
         thisScreen.setOnClickListener(this);
@@ -71,12 +76,19 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         }
     }
 
+    private long millisTime;
+
     @Override
     public void onClick(View v) {
         if (!timeRunning) {
             startTime = System.currentTimeMillis();
             timerHandler.post(timerRunnable);
         } else {
+            // Store time in database.
+            Solve solve = new Solve(0, currentScramble.getText().toString(), millisTime);
+            db.insertSolve(solve);
+
+            // Prepare for new solve.
             timerHandler.removeCallbacks(timerRunnable);
             currentScramble.setText(ScrambleGenerator.genScramble());
         }
@@ -87,6 +99,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
         @Override
         public void run() {
             long millisSoFar = System.currentTimeMillis() - startTime;
+
             long seconds = (millisSoFar / 1000) % 60;
             long minutes = (millisSoFar / (1000 * 60)) % 60;
             //long hours = (millisSoFar / (1000 * 60 * 60)) % 24;
@@ -101,6 +114,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
                 currentTimeTextView.setText(secondsLT10Format.format(millisSoFar));
             }
 
+            millisTime = millisSoFar;
             //Recursively call myself again.
             timerHandler.post(this);
         }

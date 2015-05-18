@@ -1,5 +1,6 @@
 package com.angelllim.cube.cub;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -62,10 +63,26 @@ public class SolveDB {
         }
     }
 
+    public long insertSolve(Solve solve) {
+        Log.d("test", solve.toString());
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(SOLVE_TIME, solve.getMillisTime());
+        cv.put(SOLVE_SCRAMBLE, solve.getScramble());
+
+        Log.d("cv", cv.toString());
+
+        this.openWritableDB();
+        long rowId = db.insert(SOLVE_TABLE, null, cv);
+        this.closeDB();
+
+        return rowId;
+    }
+
 
     public ArrayList<Solve> getSolves() {
 
-        //this.openWritableDB();
         this.openReadableDB();
         Cursor cursor = db.query(SOLVE_TABLE, null, null, null, null, null, null);
         ArrayList<Solve> solves = new ArrayList<Solve>();
